@@ -1,80 +1,48 @@
 # DeepShield - AI-Based Deepfake Image & Video Detection
 
-DeepShield is a Flask-based web application that detects potentially manipulated images and videos using a pretrained Vision Transformer (ViT) model. It includes user authentication, an interactive dashboard, and per-user scan history.
+Flask web app with login, per-user scan history, an interactive dashboard,
+real-world photo detection and video detection.
 
-## Features
+## Folder structure
+```
+DeepShield/
+  app.py            Flask backend (auth, API, history DB)
+  detector.py       Detection engine (pretrained ViT + face crop + ELA + video frames)
+  requirements.txt
+  templates/        login.html, dashboard.html
+  static/           css/style.css, js/app.js
+  uploads/          created automatically (your scanned files)
+  deepshield.db     created automatically (users + history)
+```
 
-- **User Authentication:** Account creation and login with hashed passwords.
-- **Interactive Dashboard:** Scan statistics, real-versus-fake distribution, and 14-day activity trends.
-- **Image Detection:** Face cropping, prediction results, fake-probability scores, and Error Level Analysis (ELA) visualization.
-- **Video Detection:** Samples 16 frames, analyzes individual frames, and displays a prediction timeline.
-- **Scan History:** Search, filter, view, and delete previous scans, with CSV export support.
-- **User-Specific History:** Keeps scan records organized by user.
-
-## Technologies Used
-
-- Python
-- Flask
-- PyTorch
-- Hugging Face Transformers
-- Vision Transformer (ViT)
-- OpenCV
-- NumPy
-- Pillow
-- HTML, CSS, and JavaScript
-- SQLite
-
-## How It Works
-
-1. The user creates an account or logs in.
-2. The user uploads an image or video for analysis.
-3. For image analysis, the system uses face cropping and the trained detection model.
-4. For video analysis, the system samples frames and combines per-frame fake probabilities.
-5. The application displays the prediction and confidence information.
-6. Scan results can be reviewed in the user's history.
-
-## Installation
-
-Clone or download this repository.
-
-Create and activate a virtual environment:
-
+## Run it
 ```bash
 python -m venv venv
-venv\Scripts\activate
-```
-
-Install the dependencies:
-
-```bash
+venv\Scripts\activate          # Windows   (Mac/Linux: source venv/bin/activate)
 pip install -r requirements.txt
-```
-
-Run the application:
-
-```bash
 python app.py
 ```
+Open http://127.0.0.1:5000 -> Create account -> New scan.
 
-Open `http://127.0.0.1:5000` in your browser.
+First start downloads the model (~350 MB, needs internet, one time only).
+Watch the terminal for "Model ready" before your first scan.
 
-The first run downloads the pretrained detection model, approximately 350 MB, and requires an internet connection.
+## Features
+- Sign in / create account (hashed passwords, private per-user history)
+- Overview: live counters, real-vs-fake donut (click a slice to filter history), 14-day trend
+- New scan: drag & drop photo or video, scanning animation, animated confidence ring
+- Photos: face crop, verdict, fake-probability meter, Error-Level-Analysis map toggle
+- Videos: 16 frames sampled, per-frame timeline chart, click a point to jump the video
+- History: search, filter (Real / Fake / Photos / Videos), open details, delete, export CSV
 
-## Model Details
+## Swap the model (optional)
+```bash
+set DEEPSHIELD_MODEL=prithivMLmods/Deep-Fake-Detector-v2-Model
+```
 
-The system uses a pretrained Vision Transformer fine-tuned for real-versus-fake face classification. OpenCV Haar Cascade is used for face cropping. Video detection samples frames and calculates the mean of their fake probabilities. Error Level Analysis provides an additional visual clue for image analysis.
-
-## Limitations
-
-- Predictions may be incorrect.
-- Heavily compressed images and videos may reduce detection reliability.
-- Non-face content may be less reliable because the model is designed for face classification.
-- Error Level Analysis is an indicator, not definitive proof of manipulation.
-
-## Project Status
-
-Completed
-
-## Disclaimer
-
-This project is intended for educational and research purposes. Detection results should not be treated as definitive proof that media is authentic or manipulated.
+## Viva notes
+- Model: pretrained Vision Transformer fine-tuned for real-vs-fake faces (transfer learning)
+- Face cropping: OpenCV Haar cascade, since the model is trained on faces
+- Video: frame sampling + mean of per-frame fake probability
+- ELA: re-saves as JPEG and amplifies the difference; a hint, not proof
+- Limits: no detector is perfect; heavily compressed or non-face content is less reliable
