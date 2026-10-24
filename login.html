@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeepShield - Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth">
+<section class="auth-hero">
+  <div class="brand"><span class="logo">&#9678;</span> DeepShield</div>
+  <div class="scanner" aria-hidden="true">
+    <svg viewBox="0 0 200 240">
+      <ellipse cx="100" cy="115" rx="62" ry="80" fill="none" stroke="currentColor" stroke-width="2"/>
+      <path d="M62 100q14-12 28 0M110 100q14-12 28 0M100 108v30q-8 6 0 8M72 168q28 22 56 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="M20 60V30h30M180 60V30h-30M20 180v30h30M180 180v30h-30" fill="none" stroke="var(--amber)" stroke-width="3"/>
+    </svg>
+    <i class="beam"></i>
+  </div>
+  <h1>Know what's real before you share it.</h1>
+  <p>Upload a photo or a video. DeepShield checks the face, scores every frame and keeps a history of everything you've verified.</p>
+</section>
+
+<section class="auth-form">
+  <div class="tabs" role="tablist">
+    <button class="tab {{ 'on' if mode=='login' }}" data-tab="login" role="tab">Sign in</button>
+    <button class="tab {{ 'on' if mode=='register' }}" data-tab="register" role="tab">Create account</button>
+  </div>
+
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% for cat, m in msgs %}<div class="flash {{ cat }}">{{ m }}</div>{% endfor %}
+  {% endwith %}
+
+  <form method="POST" action="{{ url_for('login') }}" id="f-login" class="{{ '' if mode=='login' else 'hide' }}">
+    <label>Email<input type="email" name="email" required autocomplete="email"></label>
+    <label>Password<input type="password" name="password" required autocomplete="current-password"></label>
+    <button class="btn" type="submit">Sign in</button>
+  </form>
+
+  <form method="POST" action="{{ url_for('register') }}" id="f-register" class="{{ '' if mode=='register' else 'hide' }}">
+    <label>Full name<input type="text" name="name" required autocomplete="name"></label>
+    <label>Email<input type="email" name="email" required autocomplete="email"></label>
+    <label>Password<input type="password" name="password" minlength="6" required autocomplete="new-password"></label>
+    <label>Confirm password<input type="password" name="confirm" minlength="6" required autocomplete="new-password"></label>
+    <button class="btn" type="submit">Create account</button>
+  </form>
+</section>
+
+<script>
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x === t));
+  document.getElementById('f-login').classList.toggle('hide', t.dataset.tab !== 'login');
+  document.getElementById('f-register').classList.toggle('hide', t.dataset.tab !== 'register');
+});
+</script>
+</body>
+</html>

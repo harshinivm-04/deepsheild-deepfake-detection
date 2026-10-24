@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeepShield - Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body class="app">
+<aside class="side">
+  <div class="brand"><span class="logo">&#9678;</span> DeepShield</div>
+  <nav>
+    <button class="nav on" data-view="overview">Overview</button>
+    <button class="nav" data-view="analyze">New scan</button>
+    <button class="nav" data-view="history">History <span id="hist-count" class="pill">0</span></button>
+  </nav>
+  <div class="user">
+    <div class="avatar">{{ name[0]|upper }}</div>
+    <div><b>{{ name }}</b><a href="{{ url_for('logout') }}">Sign out</a></div>
+  </div>
+</aside>
+
+<main>
+  <!-- OVERVIEW -->
+  <section id="view-overview" class="view">
+    <header><h2>Hi {{ name.split()[0] }}, here's your scan record</h2></header>
+    <div class="stats">
+      <div class="card stat"><span>Total scans</span><b id="s-total">0</b></div>
+      <div class="card stat real"><span>Verified real</span><b id="s-real">0</b></div>
+      <div class="card stat fake"><span>Flagged fake</span><b id="s-fake">0</b></div>
+      <div class="card stat"><span>Avg. confidence</span><b id="s-conf">0%</b></div>
+    </div>
+    <div class="grid2">
+      <div class="card"><h3>Real vs fake</h3><div class="chart-box"><canvas id="c-donut"></canvas></div></div>
+      <div class="card"><h3>Scans in the last 14 days</h3><div class="chart-box"><canvas id="c-line"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div class="row-between"><h3>Latest scans</h3><button class="link" data-go="history">View all</button></div>
+      <div id="recent" class="recent"></div>
+    </div>
+  </section>
+
+  <!-- ANALYZE -->
+  <section id="view-analyze" class="view hide">
+    <header><h2>New scan</h2><p class="muted">Photos: JPG, PNG, WEBP. Videos: MP4, MOV, AVI, WEBM (up to 100 MB).</p></header>
+    <div class="grid2 wide-left">
+      <div class="card">
+        <div id="drop" class="drop" tabindex="0">
+          <input type="file" id="file" accept="image/*,video/*" hidden>
+          <div id="drop-empty">
+            <div class="drop-icon">&#8593;</div>
+            <b>Drop a photo or video here</b>
+            <span class="muted">or click to browse</span>
+          </div>
+          <div id="preview" class="hide"></div>
+          <div id="beam" class="beam hide"></div>
+        </div>
+        <div class="row-between" style="margin-top:14px">
+          <span id="file-name" class="muted">No file selected</span>
+          <div class="row">
+            <button id="clear" class="btn ghost hide">Clear</button>
+            <button id="run" class="btn" disabled>Run analysis</button>
+          </div>
+        </div>
+        <p id="status" class="muted"></p>
+      </div>
+      <div class="card" id="result-card">
+        <div id="result" class="empty">
+          <b>Your result will appear here</b>
+          <span class="muted">You'll get a verdict, a confidence score and, for photos, an error-level map showing edited regions.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section id="view-history" class="view hide">
+    <header class="row-between">
+      <h2>Scan history</h2>
+      <a class="btn ghost" href="/api/export.csv">Export CSV</a>
+    </header>
+    <div class="toolbar">
+      <input id="search" type="search" placeholder="Search by file name">
+      <div class="chips">
+        <button class="chip on" data-f="all">All</button>
+        <button class="chip" data-f="Real">Real</button>
+        <button class="chip" data-f="Fake">Fake</button>
+        <button class="chip" data-f="image">Photos</button>
+        <button class="chip" data-f="video">Videos</button>
+      </div>
+    </div>
+    <div id="hist-grid" class="hist-grid"></div>
+  </section>
+</main>
+
+<dialog id="modal">
+  <button class="x" id="modal-x" aria-label="Close">&times;</button>
+  <div id="modal-body"></div>
+  <div class="row-between" style="margin-top:16px">
+    <span id="modal-date" class="muted"></span>
+    <button id="modal-del" class="btn danger">Delete scan</button>
+  </div>
+</dialog>
+<div id="toast" class="toast"></div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
