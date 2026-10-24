@@ -4,3 +4,4 @@ numpy
 opencv-python-headless<5
 torch
 transformers
+gunicorn
