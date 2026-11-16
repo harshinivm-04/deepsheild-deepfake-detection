@@ -46,3 +46,9 @@ set DEEPSHIELD_MODEL=prithivMLmods/Deep-Fake-Detector-v2-Model
 - Video: frame sampling + mean of per-frame fake probability
 - ELA: re-saves as JPEG and amplifies the difference; a hint, not proof
 - Limits: no detector is perfect; heavily compressed or non-face content is less reliable
+
+
+## Project Output
+<img width="1535" height="706" alt="image" src="https://github.com/user-attachments/assets/be0f0091-f2e1-41db-b444-57d995da0262" />
+<img width="1535" height="753" alt="image" src="https://github.com/user-attachments/assets/a1c5ba7f-e4d3-47ae-9606-9e1c1d61d769" />
+<img width="1535" height="742" alt="image" src="https://github.com/user-attachments/assets/7683fd27-9e70-4c84-8343-68d94ea4e6b4" />
